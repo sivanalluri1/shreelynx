@@ -1,18 +1,18 @@
-# ShreeLynx WordPress theme — version 2.0.1
+# ShreeLynx WordPress theme — version 2.1.0
 
 An original redesign for a software and technology consulting business. The theme uses warm white, forest green, a dark editorial section, expressive typography, and an original vector mesh sculpture. It includes eight pages: Home, Services, Industries, About, Talent, Careers, Insights, and Contact.
 
 ## Install or update
 
 1. Back up your WordPress site and database.
-2. Under Appearance → Themes → Add Theme → Upload Theme, upload `shreelynx-wordpress-v2.zip`. For an existing installation, choose to replace the current theme with the uploaded version.
+2. Under Appearance → Themes → Add Theme → Upload Theme, upload `shreelynx-wordpress-production.zip`. For an existing installation, choose to replace the current theme with the uploaded version.
 3. Activate ShreeLynx if needed.
 4. Open Appearance → ShreeLynx Setup. On a fresh site, click **Install / update ShreeLynx pages**.
 5. To upgrade the initial ShreeLynx design, select **Update previously imported ShreeLynx pages to the new design**, then click the install/update button. This refreshes only pages marked as imported by this theme. Existing unrelated pages are preserved. Previous content is saved in `_shreelynx_design_backup` post metadata and WordPress revisions where enabled. Inspect page content and the homepage after updating.
-6. Open Appearance → Customize → ShreeLynx inquiries and set the recipient email.
+6. Contact and career inquiries are fixed to `info@shreelynx.com`, with the visitor’s validated address as Reply-To. Configure Settings → Local Mail on the managed host to send from this mailbox.
 7. Configure and test email delivery on your host before launching.
 
-The theme is already installed, updated, and tested in the running Local site at `http://shreelynx.local/`. Local catches outgoing email in its development mail tool. No live hosting deployment was performed.
+The production theme is live at https://shreelynx.com/. All eight pages were imported, HTTPS was configured, and a production test inquiry was confirmed in the info@shreelynx.com inbox. The business mailing address and email appear on Contact, About, and the footer. Contact begins with the inquiry form. SMTP credentials and live WordPress settings are managed on the host and are not stored in this repository.
 
 Your host must allow custom theme uploads. This is a standard PHP WordPress theme; no Node.js process, React server, paid builder, or build command is required on the hosting server.
 
@@ -37,7 +37,7 @@ Header and footer are in `header.php` and `footer.php`. Global design lives in `
 
 Forms submit to WordPress and use `wp_mail`; they no longer open the visitor's email application. They include native required-field validation, server validation, a nonce, a honeypot, and a one-minute rate limit per hashed client IP. User-supplied values are sanitized; the reply-to address is validated. Forms do not save inquiry content in the WordPress database. A positive message means the configured mail transport accepted the email, not that it reached the recipient's inbox.
 
-The destination defaults to the WordPress administrator email until changed in the Customizer. Configure the host's mail service or an SMTP plugin, verify the sender domain as required, and send a real delivery test before publishing. The Local environment's mail catcher does not test production inbox delivery.
+The destination and sender are `info@shreelynx.com`; old Customizer recipient settings are ignored. Configure the host's mail service or an SMTP plugin, verify the sender domain as required, and send a real delivery test before publishing. The Local environment's mail catcher does not test production inbox delivery.
 
 ## Assets and references
 
@@ -47,4 +47,8 @@ The supplied references informed the overall content hierarchy, service breadth,
 
 ## Validation
 
-See the accompanying QA report. PHP syntax, JavaScript syntax, all eight routes, desktop and phone overflow, anchors and assets, menu behavior, keyboard navigation, tab panels, search, filters, article expansion, native form validation, and local mail acceptance were checked. Tablet layout was spot-checked. Production-host compatibility and production inbox delivery remain to be verified.
+See the accompanying QA report. PHP syntax, JavaScript syntax, all eight routes, desktop and phone overflow, anchors and assets, menu behavior, keyboard navigation, tab panels, search, filters, article expansion, native form validation, and local mail acceptance were checked. Tablet layout was spot-checked. Production installation and inbox delivery have also been verified. The existing draft privacy policy and missing robots.txt remain follow-up items.
+
+## Business contact details
+
+The Contact and About pages use `[shreelynx_business_contact]` for the public email and business mailing address. The footer shows the same details on every page. The provided Sheridan address is labeled as a business mailing address. Uploading the theme updates the footer immediately upon activation; bundled page changes require an explicit content import/update.

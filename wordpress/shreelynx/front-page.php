@@ -1,7 +1,7 @@
 <?php
 /** Preview the bundled design before the explicit page import. */
 defined('ABSPATH') || exit;
-if (get_option('show_on_front') === 'page' && get_option('page_on_front')) {
+if (get_option('show_on_front') === 'page' && get_option('page_on_front') && (!is_customize_preview() || get_post_meta((int) get_option('page_on_front'), '_shreelynx_imported', true))) {
     require get_template_directory() . '/index.php';
     return;
 }

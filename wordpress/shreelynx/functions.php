@@ -17,9 +17,9 @@ function shreelynx_page_url($slug) {
 
 function shreelynx_assets() {
     $uri = get_template_directory_uri();
-    wp_enqueue_style('shreelynx', get_stylesheet_uri(), array(), '2.0.1');
+    wp_enqueue_style('shreelynx', get_stylesheet_uri(), array(), '2.1.0');
     wp_enqueue_script('shreelynx-icons', $uri . '/assets/lucide.min.js', array(), '0.468.0', true);
-    wp_enqueue_script('shreelynx', $uri . '/script.js', array('shreelynx-icons'), '2.0.1', true);
+    wp_enqueue_script('shreelynx', $uri . '/script.js', array('shreelynx-icons'), '2.1.0', true);
     wp_localize_script('shreelynx', 'shreelynx', array(
         'page' => is_page() ? get_post_field('post_name', get_queried_object_id()) : '',
         'pageUrl' => is_singular() ? get_permalink() : home_url('/'),
@@ -66,6 +66,7 @@ function shreelynx_setup_screen() {
     ?>
     <div class="wrap"><h1>ShreeLynx Setup</h1>
     <p>Create the eight supplied pages and set the imported Home page as the homepage. New pages are created without overwriting existing content. Select the update option below to refresh pages previously imported by this theme; their current content is backed up first.</p>
+    <p>Contact and career inquiries are sent to <strong>info@shreelynx.com</strong>. Configure the host’s mail delivery and test receipt before launch.</p>
     <p>Page content is editable in Pages using the Code editor. Keep the HTML classes and data attributes to preserve the design and interactions.</p>
     <?php if (isset($_GET['imported'])) : ?><div class="notice notice-success"><p>Setup finished. Check Pages to review the imported design. Updated page content has a backup in post metadata and WordPress revisions when enabled.</p></div><?php endif; ?>
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -99,7 +100,7 @@ function shreelynx_import() {
         )), true);
         if (is_wp_error($id)) { wp_die(esc_html($id->get_error_message())); }
         update_post_meta($id, '_shreelynx_imported', 1);
-        update_post_meta($id, '_shreelynx_design_version', '2.0.1');
+        update_post_meta($id, '_shreelynx_design_version', '2.1.0');
     }
     $home = get_page_by_path('home');
     if ($home && get_post_meta($home->ID, '_shreelynx_imported', true)) {
@@ -183,22 +184,17 @@ function shreelynx_handle_inquiry() {
     $key = 'shreelynx_inquiry_' . hash_hmac('sha256', $ip, wp_salt('nonce'));
     if (get_transient($key)) { $finish('limited'); }
     set_transient($key, 1, MINUTE_IN_SECONDS);
-    $recipient = get_theme_mod('shreelynx_inquiry_email', get_option('admin_email'));
+    $recipient = 'info@shreelynx.com';
     if (!is_email($recipient)) { $finish('unavailable'); }
     $subject = '[ShreeLynx] ' . ($context === 'careers' ? 'Career inquiry' : 'Website inquiry');
     $body = "Name: $name\nEmail: $email\nCompany / specialty: $company\nInterest: $interest\n\n$message";
-    $sent = wp_mail($recipient, $subject, $body, array('Reply-To: ' . $email));
+    $sent = wp_mail($recipient, $subject, $body, array('From: ShreeLynx <info@shreelynx.com>', 'Reply-To: ' . $email));
     $finish($sent ? 'sent' : 'unavailable');
 }
 add_action('admin_post_shreelynx_inquiry', 'shreelynx_handle_inquiry');
 add_action('admin_post_nopriv_shreelynx_inquiry', 'shreelynx_handle_inquiry');
 
-function shreelynx_customize($customizer) {
-    $customizer->add_section('shreelynx_contact', array('title' => 'ShreeLynx inquiries', 'priority' => 35));
-    $customizer->add_setting('shreelynx_inquiry_email', array('default' => get_option('admin_email'), 'sanitize_callback' => 'sanitize_email'));
-    $customizer->add_control('shreelynx_inquiry_email', array('label' => 'Inquiry recipient email', 'description' => 'Contact and career inquiries are sent here. Configure and test WordPress mail delivery before launch.', 'section' => 'shreelynx_contact', 'type' => 'email'));
-}
-add_action('customize_register', 'shreelynx_customize');
+
 
 function shreelynx_description() {
     $descriptions = array(
@@ -220,3 +216,9 @@ function shreelynx_home_title($title) {
     return $title;
 }
 add_filter('document_title_parts', 'shreelynx_home_title');
+
+/** Public business contact details, shared by Contact and About pages. */
+function shreelynx_business_contact() {
+    return '<div class="business-contact"><div><span class="eyebrow">Email us</span><a href="mailto:info@shreelynx.com">info@shreelynx.com</a></div><div><span class="eyebrow">Business mailing address</span><address>30 N Gould St Ste R<br>Sheridan, WY 82801<br>US</address></div></div>';
+}
+add_shortcode('shreelynx_business_contact', 'shreelynx_business_contact');
